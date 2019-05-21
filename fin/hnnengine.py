@@ -64,7 +64,7 @@ if __name__ == "__main__":
         if kernerl_name.startswith(cmdlineargs.problem + "_"):
             direct_solving_kernels.append((kernerl_name, fxobject))
 
-    applicable_reductions = [(a,b) for a,b in reductions if a == cmdlineargs.problem]
+    applicable_reductions = [(a,b) for a,b in reductions if a.startswith(cmdlineargs.problem + "_")]
     kernels_after_reduction = []
     for f,t in applicable_reductions:
         for kern_name, fxobject in kernels.items():
