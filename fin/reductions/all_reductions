@@ -1,6 +1,6 @@
-mc_1->vc_1
-mc_1->tsp_1
-tsp_1->mc_1
-vc_1->tsp_1
-mc_1->bz_1
+mc->vc
+mc->tsp
+tsp->mc
+vc->tsp
+mc->bz
 

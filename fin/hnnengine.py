@@ -26,6 +26,28 @@ def load_all_reductions():
         reductions.append((f,t))
     return reductions
 
+def load_all_forward_reduction_functions():
+    mods = [m for m in os.listdir("reductions") if m.endswith("forward.py")]
+    reds = {}
+    for m in mods:
+        # basically ignoring the " forward.py" part
+        jj = (m[:-len(" forward.py")]).split(" ")
+        reds[tuple(jj)] = importlib.import_module("reductions." + m[:-3]).convert
+    
+    return reds
+
+def load_all_reverse_reduction_functions():
+    mods = [m for m in os.listdir("reductions") if m.endswith("reverse.py")]
+    reds = {}
+    for m in mods:
+        # basically ignoring the " forward.py" part
+        jj = (m[:-len(" reverse.py")]).split(" ")
+        reds[tuple(jj)] = importlib.import_module("reductions." + m[:-3]).convert
+    
+    return reds
+
+
+
 def get_cmd_line_parser():
     # returns the command line argument
     import argparse
@@ -43,6 +65,8 @@ if __name__ == "__main__":
     # Loading all the kernels the cost functions etc
     kernels = load_all_kernels()
     reductions = load_all_reductions()
+    forward_reduction_functions = load_all_forward_reduction_functions()
+    reverse_reduction_functions = load_all_reverse_reduction_functions()
 
     # Parsing the commandlien arguments
     cmdlineargs = get_cmd_line_parser()
@@ -66,11 +90,12 @@ if __name__ == "__main__":
     
     print("direct kerels", direct_solving_kernels)
 
-    applicable_reductions = [(a,b) for a,b in reductions if a.startswith(cmdlineargs.problem + "_")]
+    # list of tuples(str,str)
+    applicable_reductions = [(a,b) for a,b in reductions if a == cmdlineargs.problem]
     kernels_after_reduction = []
     for f,t in applicable_reductions:
         for kern_name, fxobject in kernels.items():
-            if kern_name.startswith(t.split("_")[0] + "_"):
+            if kern_name.startswith(t + "_"):
                 kernels_after_reduction.append((kern_name, fxobject))
     print(reductions)
     print(applicable_reductions)
@@ -78,6 +103,12 @@ if __name__ == "__main__":
 
     # This list will have all the solutions from the different reductions
     solutions = []
+    # First we get solutions by using direct kernels
+    for kern_name, fxobjectin in direct_solving_kernels:
+        solutions.append((kern_name, fxobject(cmdlineargs.file)))
+    
+    for kern_name, fxobject in kernels_after_reduction:
+        solutions.append((kern_name, fxobject()))
 
 
 
