@@ -1,5 +1,6 @@
 import random
 import math
+import time
 from random import shuffle
 class params:
     A=1
@@ -12,7 +13,13 @@ def temperature(t,n):
     t0=0.15*n
     t=math.pow((1-params.beta),t)*t0
     return t
-def vc_1(G,m):
+def vc_1(G):
+    m=0
+    for i in G:
+        for j in i:
+            if (j==1):
+                m=m+1
+    m=m/2
     d=G
     u=[]
     v=[]

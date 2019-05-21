@@ -8,7 +8,7 @@ import pickle
 import time
 from math import tanh
 import copy
-import tracer # imports ./tracer.py
+import kernels.tracer # imports ./tracer.py
 
 u0 = 0.01
 delta_t = 0.0001
@@ -322,6 +322,13 @@ def get_cmdline_args():
     parser.add_argument("--D", type=float, default=500, help="The distance penalty")
     parser.add_argument("--stopatitercnt", action='store_true', help="Setting this flag will not run the simulation beyond the value specified by itercnt")
     return parser.parse_args()
+
+
+##################################################################3
+
+def tsp_1():
+    pass
+
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
