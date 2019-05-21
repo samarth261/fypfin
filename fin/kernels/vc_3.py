@@ -1,8 +1,7 @@
 import random
-import time
 from random import shuffle
+import time
 import math
-
 def produce_neighbours(v):
     nbrs=[]
     for i in range(0,len(v)):
@@ -42,7 +41,7 @@ def compare_nbrs_sa(G,vc,t):
             random.seed(time.time())
             if(random.random()<math.pow(math.e,((sum(vcn)-sum(v))/t))):
                vcn=v[:]
-    return vcn
+    return vc
 def vc_3(G):
     T=50
     vc=[]

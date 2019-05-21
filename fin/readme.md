@@ -1,10 +1,6 @@
-## Structure of the hnnengine
-- All the kernels are given in the kernels package
+### Setting Up
 
+Run the install.sh   `bash install.sh`
 
+#### Prerequisites:
 
-## Parameters taken by hnnengine
-
-- the input file
-- the problem
-- 

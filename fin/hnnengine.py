@@ -127,7 +127,8 @@ if __name__ == "__main__":
     print(solutions)
     # Finally we choose the best result from amongst many
     resolver = importlib.import_module("selector." + cmdlineargs.problem).choose_best
-    final_answer = resolver([ii for jj,ii in solutions])
+    final_answer = resolver([ii for jj,ii in solutions], pickle.load(open(cmdlineargs.file, "rb")))
+    # final_answer = resolver(solutions)
     print(final_answer)
 
 
