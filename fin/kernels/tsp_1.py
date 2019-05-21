@@ -4,7 +4,7 @@ def fx1():
     print("supporting tsp")
     return "tsp"
 
-def tsp(*args, **kwargs):
+def tsp_1(*args, **kwargs):
     print("This is the tsp kernel")
     print("using fx1")
     s = fx1()
@@ -12,6 +12,6 @@ def tsp(*args, **kwargs):
 
 if __name__=="__main__":
     print("running independently")
-    tsp()
+    tsp_1()
 
 
