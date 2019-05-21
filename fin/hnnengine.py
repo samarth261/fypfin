@@ -65,7 +65,7 @@ def get_cmd_line_parser():
 if __name__ == "__main__":
     # Loading all the kernels the cost functions etc
     kernels = load_all_kernels()
-    reductions = load_all_reductions()
+    reductions = load_all_reductions() # This only has the mappings from what to what
     forward_reduction_functions = load_all_forward_reduction_functions()
     reverse_reduction_functions = load_all_reverse_reduction_functions()
 
@@ -121,5 +121,9 @@ if __name__ == "__main__":
             )
         )
 
+    # Finally we choose the best result from amongst many
+    resolver = importlib.import_module("selector." + cmdlineargs.problem).choose_best
+    final_answer = resolver([ii for jj,ii in solutions])
+    print(final_answer)
 
 
