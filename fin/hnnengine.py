@@ -85,19 +85,21 @@ if __name__ == "__main__":
     # - the kernel name
     # - the function object
     direct_solving_kernels = []
-    for kernerl_name, fxobject in kernels.items():
+    for kernerl_name in kernels.keys():
         if kernerl_name.startswith(cmdlineargs.problem + "_"):
-            direct_solving_kernels.append((kernerl_name, fxobject))
+            direct_solving_kernels.append((kernerl_name, kernels[kernerl_name]))
     
     print("direct kerels", direct_solving_kernels)
 
     # list of tuples(str,str)
     applicable_reductions = [(a,b) for a,b in reductions if a == cmdlineargs.problem]
     kernels_after_reduction = []
-    for f,t in applicable_reductions:
-        for kern_name, fxobject in kernels.items():
-            if kern_name.startswith(t + "_"):
-                kernels_after_reduction.append((kern_name, fxobject))
+
+    if not cmdlineargs.nored:
+        for f,t in applicable_reductions:
+            for kern_name, fxobject in kernels.items():
+                if kern_name.startswith(t + "_"):
+                    kernels_after_reduction.append((kern_name, fxobject))
     print(reductions)
     print(applicable_reductions)
     print("kernel after reduction", kernels_after_reduction)
@@ -105,8 +107,9 @@ if __name__ == "__main__":
     # This list will have all the solutions from the different reductions
     solutions = []
     # First we get solutions by using direct kernels
-    for kern_name, fxobjectin in direct_solving_kernels:
-        solutions.append((kern_name, fxobject(cmdlineargs.file)))
+    for kern_name, fxobject in direct_solving_kernels:
+        print("ker name", kern_name)
+        solutions.append((kern_name, fxobject(pickle.load(open(cmdlineargs.file, "rb")))))
     
     for kern_name, fxobject in kernels_after_reduction:
         result = fxobject(
@@ -121,6 +124,7 @@ if __name__ == "__main__":
             )
         )
 
+    print(solutions)
     # Finally we choose the best result from amongst many
     resolver = importlib.import_module("selector." + cmdlineargs.problem).choose_best
     final_answer = resolver([ii for jj,ii in solutions])

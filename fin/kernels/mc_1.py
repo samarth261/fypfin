@@ -1,3 +1,6 @@
+import time
+import random
+
 def flip_or_not(G,v,S,e):
     wo=0
     wi=0
@@ -13,7 +16,7 @@ def flip_or_not(G,v,S,e):
     else:
         return -1
 #algorithm for local search
-def mc(G,e=0.1):
+def mc_1(G,e=0.1):
     n=len(G)
     S=[]
     for i in range(n):

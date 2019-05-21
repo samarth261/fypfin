@@ -1,28 +1,10 @@
 import random
 import math
-from random import shuffle
 import time
-def generate_graph(n,m):
-    G=[]
-    #initialize the adjacency matrix to null state
-    for x in range(n):
-        temp=[]
-        for y in range(n):
-            temp.append(0)
-        G.append(temp)
-    #assigning weights to randomly created edges
-    for a in range(m):
-        i=random.randint(0,n-1)
-        j=random.randint(0,n-1)
-        while(G[i][j]>0 or i==j):
-            i=random.randint(0,n-1)
-            j=random.randint(0,n-1)
-        G[i][j]=1
-        G[j][i]=1
-    return G
+from random import shuffle
 class params:
-    A=2.5
-    B=0.5
+    A=1
+    B=0.8
     beta=0.05
 def sigmoid(x,theta=5):
     y=1/(1+(math.pow(math.e,(-x/theta))))
@@ -32,7 +14,7 @@ def temperature(t,n):
     t=math.pow((1-params.beta),t)*t0
     return t
 def vc_1(G):
-    m=1
+    m=0
     for i in G:
         for j in i:
             if (j==1):
@@ -51,7 +33,7 @@ def vc_1(G):
         v.append(sigmoid(u[i]))
        
     energies=[]
-    for ite in range(0,1000):
+    for ite in range(0,5000):
         temp=temperature(ite,len(G))
         for i in range(0,len(G)):
             t1=-params.A
@@ -66,9 +48,9 @@ def vc_1(G):
             t4=(-1)*temp*(1-(s2/m))
             u[i]=t1+t2+t3+t4
             v[i]=sigmoid(u[i])
+        print(v)
     for i in range(0,len(v)):
         if(v[i]>=0.5):
             vd.append(1)
         else:
             vd.append(0)
-    return vd

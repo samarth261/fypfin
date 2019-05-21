@@ -1,2 +1,2 @@
-def convert(*args, **kwargs):
-    return [1,2,3]
+def convert(l):
+    return l

@@ -8,12 +8,12 @@ import pickle
 import time
 from math import tanh
 import copy
-import kernels.tracer # imports ./tracer.py
+import tracer # imports ./tracer.py
 
 u0 = 0.01
-delta_t = 0.0001
+delta_t = 0.00001
 termination_threshold = 0.1
-non_interactive = False
+non_interactive = True
 no_plot = False
 
 stop_at_iteration_count = False
@@ -197,7 +197,7 @@ def hopfield_tsp(cities, distances, target_axes, iteration_count):
     success_flag = False
     num_cities = len(cities)
     network = (np.random.rand(num_cities, num_cities)-0.5)*2
-    network = pickle.load(open('tracers/f31bbcae-8b93-41c2-8bca-2e5943d263d0','rb')).init_net
+    network += pickle.load(open('tracers/f31bbcae-8b93-41c2-8bca-2e5943d263d0','rb')).init_net
 
     cached_initial_network = copy.copy(network)
     # energy_line = target_axes.plot([0],[energy_of(network, distances, cities)])
@@ -256,7 +256,8 @@ def hopfield_tsp(cities, distances, target_axes, iteration_count):
                 
                 print("success total distance =", total_distance)
                 success_flag = True
-                trc.add_solution(after_threshold)
+                if __name__ == "__main__":
+                    trc.add_solution(after_threshold)
                 break
                 
             if abs(old_energy - energy) < 10**-35:
@@ -288,7 +289,8 @@ def hopfield_tsp(cities, distances, target_axes, iteration_count):
             print("\n", np.around(vec_gou(network), decimals=2))
 
         if success_flag:
-            trc.set_true_itercnt_and_init_network(true_iter, cached_initial_network)
+            if __name__ == "__main__":
+                trc.set_true_itercnt_and_init_network(true_iter, cached_initial_network)
             return (True,total_distance,after_threshold)
 
         
@@ -326,8 +328,68 @@ def get_cmdline_args():
 
 ##################################################################3
 
-def tsp_1():
-    pass
+def tsp_1(city):
+    from math import sqrt as sqrt
+    import matplotlib.pyplot as plt
+    print("tsp started")
+    dist = []
+    def dist_fx(a,b):
+        return sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
+
+    for i in range(len(city)):
+        dist.append([])
+        for j in range(len(city)):
+            dist[i].append([])
+            dist[i][j] = dist_fx(city[i],city[j])
+    
+    ## Setting the globals
+    global u0
+    global delta_t
+    global termination_threshold
+    iteration_count = 2000
+    params.D = 150
+    retries_left = 10
+    u0 = 0.2
+    delta_t = 0.00001
+    termination_threshold = 0.1
+    non_interactive = True
+    no_plot = False
+    # trc = tracer.TSPTracer(len(city), "None", delta_t, u0, termination_threshold, params.A, params.B, params.C, params.D, city, dist)   
+    
+    if not no_plot:
+        plt.ion()
+        cities_plot = plt.figure()
+        ax = cities_plot.add_subplot(111)
+        ax.scatter(city[:,0], city[:,1])
+
+        # This for the energy function:
+        energy_plot = plt.figure()
+        energy_axes = energy_plot.add_subplot(111)
+        energy_axes.set_autoscale_on(True)
+    
+    while retries_left >= 0:
+        retries_left -= 1
+        ret = hopfield_tsp(city,dist,energy_axes, iteration_count)
+        print(ret)
+        if ret[0]:
+	    # This implies a route was found.
+            # We write the tracer contents
+            # trc.set_number_of_retries(args.retry - retries_left - 1)
+            # trc.set_status("pass")
+            # trc.save_to_stats_file()
+            if not no_plot:
+                import matplotlib.lines as lines
+                edge_line_gen = lambda x,y : lines.Line2D([city[x][0], city[y][0]], 
+                                                [city[x][1], city[y][1]],
+                                                linewidth=1,
+                                                linestyle=':')
+                tsp = ret[2]
+                edge_lines = [edge_line_gen(list(tsp[:,i]).index(1), list(tsp[:,(i+1)%len(city)]).index(1)) for i in range(len(city))]
+                
+                for line in edge_lines:
+                    ax.add_line(line)
+                input()
+            exit(0);
 
 
 if __name__ == "__main__":
@@ -337,8 +399,8 @@ if __name__ == "__main__":
     args = get_cmdline_args()
 
     N_CITY = args.ncity
-    MAX_X = 20
-    MAX_Y = 20
+    # MAX_X = 20
+    # MAX_Y = 20
 
     delta_t = args.delta_t
     u0 = args.u0

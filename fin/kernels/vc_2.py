@@ -1,5 +1,6 @@
 import random
 import math
+import time
 from random import shuffle
 
 def produce_neighbours(v):
