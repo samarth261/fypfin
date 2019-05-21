@@ -377,6 +377,7 @@ def tsp_1(city):
             # trc.set_number_of_retries(args.retry - retries_left - 1)
             # trc.set_status("pass")
             # trc.save_to_stats_file()
+            print(ret[1])
             if not no_plot:
                 import matplotlib.lines as lines
                 edge_line_gen = lambda x,y : lines.Line2D([city[x][0], city[y][0]], 
@@ -389,7 +390,22 @@ def tsp_1(city):
                 for line in edge_lines:
                     ax.add_line(line)
                 input()
-            exit(0);
+            return ret[1]
+
+
+def get_the_distance(soln, dists):
+    # soln needs to be a 0 or 1 matrix which is correct
+    # self.soln = soln
+    n = len(dists)
+    total_distance = 0
+    for x in range(n):
+        for y in range(n):
+            if y == x:
+                continue
+            for i in range(n):
+                total_distance += ( dists[x][y] * soln[x][i] * 
+                              (soln[y][(i+1)%n] + soln[y][(i-1)%n]) )
+    return total_distance
 
 
 if __name__ == "__main__":
