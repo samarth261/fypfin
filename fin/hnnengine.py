@@ -4,6 +4,7 @@
 
 import importlib
 import os
+import pickle
 
 
 # Loading all the modules inside the kernels folder/package
@@ -108,7 +109,17 @@ if __name__ == "__main__":
         solutions.append((kern_name, fxobject(cmdlineargs.file)))
     
     for kern_name, fxobject in kernels_after_reduction:
-        solutions.append((kern_name, fxobject()))
+        result = fxobject(
+            forward_reduction_functions[(cmdlineargs.problem, kern_name.split("_")[0])](
+                pickle.load(open(cmdlineargs.file, "rb"))
+            )
+        )
+        solutions.append(
+            (
+            kern_name, 
+            reverse_reduction_functions[(cmdlineargs.problem, kern_name.split("_")[0])](result)
+            )
+        )
 
 
 
